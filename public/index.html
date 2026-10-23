@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>CareerGuru AI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
+<style>
+:root{--bg:#07080f;--s:rgba(255,255,255,.055);--bd:rgba(255,255,255,.1);--tx:#eef0ff;--mu:#9aa0c3;--a:#7c6bff;--a2:#38e0ff;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;color:var(--tx);background-color:var(--bg);background-image:radial-gradient(60% 40% at 8% -5%,rgba(124,107,255,.3),transparent),radial-gradient(50% 35% at 100% 8%,rgba(56,224,255,.13),transparent);background-attachment:fixed;font:15px/1.55 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 104px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:14px 0 6px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
+.brand i{font-style:normal;color:var(--a2)}
+.logo{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#8b7bff,#38e0ff);color:#07080f;font-weight:800;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 18px rgba(124,107,255,.45)}
+.av{width:40px;height:40px;border-radius:50%;border:1px solid var(--bd);background:var(--s);color:var(--tx);display:grid;place-items:center;font:inherit;font-weight:700;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+.h{font-size:24px;line-height:1.25;margin:10px 0 4px;font-weight:800}
+.h2{font-size:17px;margin:20px 0 0}
+.mu{color:var(--mu);margin:.3em 0}
+p{margin:.4em 0}
+ul{margin:.4em 0 .8em;padding-left:18px}
+.card{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid var(--bd);border-radius:20px;padding:16px;margin:12px 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 12px 32px rgba(0,0,0,.4);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);overflow-wrap:anywhere}
+.row{display:flex;gap:14px;align-items:center}
+.btn{position:relative;overflow:hidden;width:100%;border:0;border-radius:14px;padding:13px 18px;font:inherit;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,#8b7bff,#5b4bff);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 22px rgba(91,75,255,.4)}
+.btn::after{content:"";position:absolute;inset:0 0 50% 0;background:linear-gradient(rgba(255,255,255,.2),transparent);pointer-events:none}
+.btn.g{background:var(--s);border:1px solid var(--bd);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.btn.g::after{display:none}
+.btn:disabled{opacity:.5}
+.chip{display:block;text-align:left;margin-top:8px;font-weight:600;font-size:14px}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--a2);outline-offset:2px}
+.lb{display:block;margin:10px 0 0;font-size:13px;color:var(--mu);font-weight:600}
+input,textarea,select{display:block;width:100%;margin-top:5px;background:rgba(255,255,255,.05);border:1px solid var(--bd);border-radius:12px;color:var(--tx);padding:12px;font:inherit;font-size:16px;resize:vertical}
+select option{background:#14162a}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.q{display:flex;flex-direction:column;gap:8px;align-items:flex-start;text-align:left;padding:14px;border-radius:18px;border:1px solid var(--bd);color:var(--tx);font:inherit;font-weight:700;font-size:14px;cursor:pointer;background:linear-gradient(160deg,rgba(255,255,255,.1),rgba(255,255,255,.03));box-shadow:inset 0 1px 0 rgba(255,255,255,.16)}
+.q svg{color:var(--a2)}
+.ring{flex:none;width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--a2) calc(var(--v)*1%),rgba(255,255,255,.09) 0);box-shadow:0 0 24px rgba(56,224,255,.2)}
+.ring b{width:68px;height:68px;border-radius:50%;background:#0c0e1b;display:grid;place-items:center;font-size:22px}
+.bl{display:flex;justify-content:space-between;font-size:13px;margin-top:10px}
+.tr{height:8px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:4px}
+.tr i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--a),var(--a2))}
+.tag{display:inline-block;padding:3px 10px;border-radius:99px;background:rgba(124,107,255,.18);border:1px solid rgba(124,107,255,.4);font-size:12px;font-weight:600;margin:4px 4px 0 0}
+.fx{border-left:3px solid var(--a);padding-left:10px;margin:10px 0}
+.plan .row{justify-content:space-between}
+.plan .btn{margin-top:10px}
+.plan.best{border-color:rgba(56,224,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 0 28px rgba(56,224,255,.18)}
+.m{max-width:90%;padding:10px 14px;border-radius:18px;margin:8px 0;overflow-wrap:anywhere}
+.m p{margin:.25em 0}.m li{margin-left:16px;display:list-item}
+.m.u{margin-left:auto;background:linear-gradient(135deg,#8b7bff,#5b4bff);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.m.a{background:var(--s);border:1px solid var(--bd)}
+.sk{height:14px;border-radius:8px;margin:12px 0;background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.13),rgba(255,255,255,.05));background-size:200% 100%;animation:sh 1.3s linear infinite}
+@keyframes sh{to{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.sk{animation:none}}
+.err{border-color:rgba(255,120,140,.5)}
+.bar{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(9,10,19,.8);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-top:1px solid var(--bd);z-index:5}
+.bar button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:var(--mu);font:inherit;font-size:11px;font-weight:600;padding:4px 0;cursor:pointer}
+.bar button.on{color:var(--a2)}
+.bar button.on svg{filter:drop-shadow(0 0 6px rgba(56,224,255,.7))}
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:90%;padding:10px 16px;border-radius:14px;background:#1b1e38;border:1px solid var(--bd);font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9}
+#toast.on{opacity:1}
+@media(min-width:768px){.grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand"><span class="logo">C</span><span>CareerGuru <i>AI</i></span></div><button class="av" id="av" data-go="profile" aria-label="Profile"></button></header>
+<main id="app"></main>
+</div>
+<nav class="bar" id="nav" aria-label="Main"></nav>
+<div id="toast" role="status"></div>
+<script>
+const $=s=>document.querySelector(s);
+const e=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const A=x=>Array.isArray(x)?x:[];
+const n=x=>Math.max(0,Math.min(100,Math.round(+x)||0));
+const md=s=>e(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').split('\n').map(l=>/^\s*[-•*] /.test(l)?'<li>'+l.replace(/^\s*[-•*] /,'')+'</li>':l.trim()?'<p>'+l+'</p>':'').join('');
+const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(x){return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(x){}};
+const S={tab:'home',p:ld('cg_p',{}),r:ld('cg_r',{}),f:ld('cg_f',{}),chat:ld('cg_c',[]),busy:false,del:false,am:'in',msg:'',em:'',rec:false,ses:null,user:null};
+const IC={home:'M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z',career:'M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z',resume:'M6 2h9l5 5v15H6zM14 2v6h6M9 13h8M9 17h8',job:'M4 7h16v13H4zM9 7V4h6v3',chat:'M4 4h16v12H8l-4 4z',user:'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0',mic:'M12 3a3 3 0 013 3v6a3 3 0 01-6 0V6a3 3 0 013-3zM6 11a6 6 0 0012 0M12 17v4'};
+const ico=k=>`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IC[k]}"/></svg>`;
+const TABS=[['home','Home'],['career','Career'],['resume','Resume'],['job','Jobs'],['chat','Chat']];
+const F=[['name','Name'],['degree','Degree (e.g. BSc)'],['branch','Branch / subject'],['year','Year of study'],['college','College'],['skills','Skills (comma separated)','t'],['interests','Interests','t'],['exp','Experience','t'],['certs','Certifications','t'],['role','Target job role'],['salary','Expected salary'],['loc','Preferred location']];
+const LG=['English','Telugu','Hinglish / Telugu-English mix'];
+const pstr=()=>F.map(([k,l])=>S.p[k]?l+': '+S.p[k]:'').filter(Boolean).join('\n');
+const LOAD={career:'Analyzing your career profile…',resume:'Analyzing your resume…',job:'Matching you with this job…'};
+const ERR='We couldn’t complete the analysis right now. Please try again.';
+const Q=['I’m BSc Computer Science final year. I know basic Python and video editing. What should I do?','How do I get my first job without experience?','What should I put in a fresher’s resume summary?'];
+const lang=()=>S.p.lang||'English';
+const SB={url:'',key:''};
+const MAP={name:'name',degree:'degree',branch:'branch',year:'year',college:'college',skills:'skills',interests:'interests',exp:'experience',certs:'certs',role:'target_role',salary:'expected_salary',loc:'preferred_location',lang:'language'};
+const sbf=(p,o,t)=>fetch(SB.url+p,{...o,headers:{apikey:SB.key,'Content-Type':'application/json',...(t?{Authorization:'Bearer '+t}:{}),...((o&&o.headers)||{})}});
+const chk=async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw {message:j.error_description||j.msg||j.message||ERR};return j};
+function setSes(j){S.ses={access_token:j.access_token,refresh_token:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000-60000};if(j.user)S.user=j.user;sv('cg_s',{...S.ses,user:S.user})}
+async function tok(){
+  if(!S.ses)throw {code:'auth'};
+  if(Date.now()>S.ses.exp){const r=await sbf('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:S.ses.refresh_token})});if(!r.ok){await wipe(false);throw {code:'auth'}}setSes(await r.json())}
+  return S.ses.access_token}
+async function api(feature,input,extra){
+  const t=await tok(),ac=new AbortController(),to=setTimeout(()=>ac.abort(),90000);
+  try{const r=await fetch('/api/ai',{method:'POST',signal:ac.signal,headers:{'Content-Type':'application/json',Authorization:'Bearer '+t},body:JSON.stringify({feature,input,lang:lang(),...extra})});
+    const j=await r.json().catch(()=>({}));if(!r.ok)throw {code:j.code||'fail',message:j.error||ERR};return j.result}
+  finally{clearTimeout(to)}}
+async function loadProfile(){
+  try{const t=await tok();
+    const [pr,an]=await Promise.all([sbf('/rest/v1/profiles?select=*&limit=1',{},t),sbf('/rest/v1/analyses?select=type,result&order=created_at.desc&limit=30',{},t)]);
+    const d=(await pr.json())[0];if(d)for(const k in MAP)if(d[MAP[k]])S.p[k]=d[MAP[k]];
+    const a=await an.json();if(Array.isArray(a)){S.r={};a.reverse().forEach(x=>S.r[x.type]=x.result)}
+    sv('cg_p',S.p);sv('cg_r',S.r)}catch(x){}
+  render()}
+let pt;
+function saveProfile(){clearTimeout(pt);pt=setTimeout(async()=>{if(!S.user)return;try{const row={user_id:S.user.id,updated_at:new Date().toISOString()};for(const k in MAP)row[MAP[k]]=S.p[k]||null;await sbf('/rest/v1/profiles?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(row)},await tok())}catch(x){}},900)}
+async function wipe(del){
+  try{if(del&&S.user){const t=await tok();for(const tb of ['analyses','chat_messages','resumes','profiles'])await sbf('/rest/v1/'+tb+'?user_id=eq.'+S.user.id,{method:'DELETE'},t)}
+    else if(S.ses)await sbf('/auth/v1/logout',{method:'POST'},S.ses.access_token)}catch(x){}
+  if(!del){S.ses=null;S.user=null;S.rec=false;S.am='in';S.msg=''}
+  try{['cg_p','cg_r','cg_f','cg_c'].concat(del?[]:['cg_s']).forEach(k=>localStorage.removeItem(k))}catch(x){}
+  S.p={};S.r={};S.f={};S.chat=[];S.del=false;S.tab='home';toast(del?'Your data was erased.':'Logged out.');render()}
+async function doAuth(){
+  const em=($('#em')||{}).value||'',pw=($('#pw')||{}).value||'',E=em.trim();S.msg='';if(E)S.em=E;
+  try{
+    if(S.rec){if(pw.length<8)throw {message:'Use at least 8 characters.'};await chk(await sbf('/auth/v1/user',{method:'PUT',body:JSON.stringify({password:pw})},S.ses.access_token));S.rec=false;await loadProfile()}
+    else{
+      if(!/^\S+@\S+\.\S+$/.test(E))throw {message:'Enter a valid email.'};
+      if(S.am==='fg'){await chk(await sbf('/auth/v1/recover?redirect_to='+encodeURIComponent(location.origin),{method:'POST',body:JSON.stringify({email:E})}));S.msg='If this email has an account, a reset link is on its way.'}
+      else{
+        if(pw.length<8)throw {message:'Use at least 8 characters.'};
+        if(S.am==='up'){await chk(await sbf('/auth/v1/signup?redirect_to='+encodeURIComponent(location.origin),{method:'POST',body:JSON.stringify({email:E,password:pw})}));S.am='in';S.msg='Account created. Open the email we sent to verify, then log in.'}
+        else{setSes(await chk(await sbf('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email:E,password:pw})})));await loadProfile()}
+      }}
+  }catch(x){S.msg=x.message||ERR}
+  render()}
+async function run(k,inp){
+  const out=$('#out');out.innerHTML=`<div class="card" aria-busy="true"><b>${LOAD[k]}</b>${'<div class="sk"></div>'.repeat(5)}</div>`;
+  try{S.r[k]=await api(k,inp);sv('cg_r',S.r);render()}
+  catch(x){out.innerHTML=`<div class="card err" role="alert"><b>${ERR}</b><p class="mu">${x&&x.code==='limit'?e(x.message)+' ':''}Your input is saved.</p><button class="btn" data-act="${k}">Retry</button></div>`}
+}
+const tags=a=>A(a).map(x=>`<span class="tag">${e(x)}</span>`).join('');
+const li=a=>A(a).map(x=>`<li>${e(x)}</li>`).join('');
+const ring=v=>`<div class="ring" style="--v:${n(v)}"><b>${n(v)}</b></div>`;
+const bar=(l,v)=>`<div class="bl"><span>${e(l)}</span><b>${n(v)}%</b></div><div class="tr"><i style="width:${n(v)}%"></i></div>`;
+const greet=()=>{const h=new Date().getHours();return h<12?'Good morning':h<17?'Good afternoon':'Good evening'};
+const careerOut=c=>`<div class="card row">${ring(c.score)}<div><b>${e(c.level||'Career readiness')}</b><p class="mu">${e(c.summary)}</p></div></div>
+<div class="card"><b>Strengths</b><ul>${li(c.strengths)}</ul><b>Weaknesses</b><ul>${li(c.weaknesses)}</ul><b>Missing skills</b><div>${tags(c.missing_skills)}</div></div>
+<h2 class="h2">Your top career paths</h2>${A(c.paths).map((p,i)=>`<div class="card"><b>${i+1}. ${e(p.title)}</b> <span class="tag">${e(p.difficulty)}</span><p>${e(p.why)}</p><p class="mu">Skills: ${e(A(p.skills).join(', '))}</p><p class="mu">Gaps: ${e(A(p.gaps).join(', '))}</p><p class="mu">Learning time: ${e(p.time)} · Growth: ${e(p.growth)}</p><div class="fx"><b>Next action:</b> ${e(p.next)}</div></div>`).join('')}
+<div class="card"><b>Short-term roadmap</b><ul>${li(c.roadmap&&c.roadmap.short)}</ul><b>Long-term roadmap</b><ul>${li(c.roadmap&&c.roadmap.long)}</ul></div>`;
+const resumeOut=r=>`<div class="card row">${ring(r.overall)}<div><b>Resume score</b><p class="mu">Out of 100, scored on the text you provided.</p></div></div>
+<div class="card">${Object.entries(r.scores||{}).map(([k,v])=>bar(k,v)).join('')}</div>
+<div class="card"><b>Problems found</b><ul>${li(r.problems)}</ul></div>
+<div class="card"><b>Exact improvements</b>${A(r.fixes).map(f=>`<div class="fx"><p class="mu">Before: ${e(f.before)}</p><p>After: ${e(f.after)}</p></div>`).join('')}<b>Improved summary</b><p>${e(r.improved_summary)}</p></div>`;
+const jobOut=j=>`<div class="card row">${ring(j.match)}<div><b>${n(j.match)}% match</b><p class="mu">Based on your profile and resume text.</p></div></div>
+<div class="card">${Object.entries(j.breakdown||{}).map(([k,v])=>bar(k,v)).join('')}</div>
+<div class="card"><b>You are a strong match because</b><p>${e(j.strong_because)}</p><b>You may be rejected because</b><p>${e(j.may_reject_because)}</p></div>
+<div class="card"><b>Required skills</b><div>${tags(j.required)}</div><b>Missing from your profile</b><div>${tags(j.missing)}</div><b>Keywords to add</b><div>${tags(j.keywords)}</div></div>
+<div class="card"><b>Your preparation plan</b><ul>${li(j.plan)}</ul></div>`;
+const msgs=()=>S.chat.length?S.chat.map(m=>`<div class="m ${m.r}">${m.t?md(m.t):'<div class="sk" style="width:140px"></div>'}${m.err?'<button class="btn g" data-act="rc" style="margin-top:8px">Retry</button>':''}</div>`).join(''):`<div class="card"><p class="mu">Ask me anything about your career. Try:</p>${Q.map(q=>`<button class="btn g chip" data-q="${e(q)}">${e(q)}</button>`).join('')}</div>`;
+const QA=[['career','career','Find career path'],['resume','resume','Analyze resume'],['job','job','Analyze a job'],['chat','chat','Career chat'],['profile','user','Edit profile'],['soon','mic','Practice interview']];
+const V={
+home:()=>{const r=S.r,c=r.career;return `<h1 class="h">${greet()}, ${e(S.p.name||'there')}</h1>
+<div class="card row">${ring(c?c.score:0)}<div><b>Career readiness${c?'':' — not scored yet'}</b><p class="mu">${c?e(c.summary):'Run the Career Analyzer to get your real score.'}</p></div></div>
+${S.p.degree&&S.p.skills?'':'<div class="card"><b>Start here</b><p class="mu">Add your degree and skills so every analysis is personal.</p><button class="btn" data-go="profile">Complete profile</button></div>'}
+<h2 class="h2">Quick actions</h2><div class="grid" style="margin-top:10px">${QA.map(([g,i,l])=>`<button class="q" data-go="${g}">${ico(i)}${l}</button>`).join('')}</div>
+<h2 class="h2">Progress</h2><div class="card">${r.resume?bar('Resume score',r.resume.overall):'<p class="mu">Resume: not analyzed yet</p>'}${r.job?bar('Latest job match',r.job.match):'<p class="mu">Job match: not analyzed yet</p>'}${c?bar('Career readiness',c.score):''}</div>`},
+career:()=>{const ok=S.p.degree&&S.p.skills;return `<h1 class="h">Career Analyzer</h1><div class="card"><p class="mu">${ok?'Using your profile: '+e([S.p.degree,S.p.branch,S.p.skills].filter(Boolean).join(' · ')):'Add your degree and skills in your profile first.'}</p><button class="btn" data-act="${ok?'career':'prof'}">${ok?(S.r.career?'Analyze again':'Analyze my career'):'Complete profile'}</button></div><div id="out">${S.r.career?careerOut(S.r.career):''}</div>`},
+resume:()=>`<h1 class="h">Resume Analyzer</h1><div class="card"><label class="lb">Paste your resume text<textarea data-f="resume" data-s="f" rows="9" maxlength="12000" placeholder="Paste your resume here…">${e(S.f.resume||'')}</textarea></label><label class="lb">…or load a .txt / .md file<input type="file" id="file" accept=".txt,.md,text/plain"></label><p class="mu">PDF, DOC and DOCX upload — coming soon.</p><button class="btn" data-act="resume">Analyze resume</button></div><div id="out">${S.r.resume?resumeOut(S.r.resume):''}</div>`,
+job:()=>`<h1 class="h">Job Description Analyzer</h1><div class="card"><label class="lb">Paste the job description<textarea data-f="jd" data-s="f" rows="9" maxlength="12000" placeholder="Paste the job description here…">${e(S.f.jd||'')}</textarea></label><p class="mu">Uses your profile${S.f.resume?' and the resume text you pasted':''}.</p><button class="btn" data-act="job">Check my match</button></div><div id="out">${S.r.job?jobOut(S.r.job):''}</div>`,
+chat:()=>`<h1 class="h">Career Chat</h1><div id="msgs">${msgs()}</div><div class="card"><label class="lb">Your question<textarea data-f="chat" data-s="f" rows="2" placeholder="Ask about careers, resume, interviews…">${e(S.f.chat||'')}</textarea></label><button class="btn" data-act="send" style="margin-top:10px" ${S.busy?'disabled':''}>${S.busy?'Thinking…':'Send'}</button></div>`,
+profile:()=>`<h1
