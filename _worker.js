@@ -11,6 +11,23 @@ const GENERIC = 'We couldn’t complete the analysis right now. Please try again
 const J = (o, s = 200) => Response.json(o, { status: s, headers: { 'Cache-Control': 'no-store' } });
 const fail = (s, code, error, detail) => J({ code, error, detail }, s);
 
+// Free-plan daily limits. The Supabase "plans" row with id = 'free' (its "limits" column) is the
+// source of truth. The numbers below are only a safety net for a key that row does not define,
+// so the database value always wins. chat_per_day counts chat messages; every other key counts uses.
+const FREE_DEFAULTS = { career: 5, resume: 5, job: 3, resume_build: 5, interview: 3, chat_per_day: 10 };
+function freeLimits(raw) {
+  let src = raw;
+  if (typeof src === 'string') { try { src = JSON.parse(src); } catch { src = null; } }
+  if (!src || typeof src !== 'object') src = {};
+  const out = {};
+  for (const k in FREE_DEFAULTS) {
+    const v = src[k];
+    const ok = (typeof v === 'number' || (typeof v === 'string' && v.trim() !== '')) && Number.isFinite(Number(v)) && Number(v) >= 0;
+    out[k] = ok ? Math.floor(Number(v)) : FREE_DEFAULTS[k];
+  }
+  return out;
+}
+
 // One modular prompt per feature
 const PROMPTS = {
   career: {
@@ -115,40 +132,40 @@ async function handleAi(request, env) {
     ...o, headers: { ...auth, 'Content-Type': 'application/json', ...(o.headers || {}) },
   });
 
-  // 2. Plan and free-tier limits
-const paidPlansEnabled = false;
-let pro = false;
+  // 2. Plan and daily free-tier limits
+  // Paid plans stay disabled until ENABLE_PAID_PLANS is explicitly set to 'true' in Cloudflare.
+  const paidPlansEnabled = env.ENABLE_PAID_PLANS === 'true';
+  let pro = false;
 
-if (paidPlansEnabled) {
-  const subs = await (await rest('subscriptions?select=plan_id,status,expiry_date&limit=1')).json();
-  const sub = A(subs)[0];
-  pro = !!(sub && sub.plan_id !== 'free' &&
-    sub.status === 'active' &&
-    (!sub.expiry_date || new Date(sub.expiry_date) > new Date()));
-}
+  if (paidPlansEnabled) {
+    const subs = await (await rest('subscriptions?select=plan_id,status,expiry_date&limit=1')).json();
+    const sub = A(subs)[0];
+    pro = !!(sub && sub.plan_id !== 'free' && sub.status === 'active' &&
+      (!sub.expiry_date || new Date(sub.expiry_date) > new Date()));
+  }
 
-const lkey = feature === 'iv_start' ? 'interview' : feature;
+  // Each use is counted exactly once, from the one row this worker saves after a successful AI answer:
+  // analyses (type = feature; interview = one row per session) or chat_messages (role = user only).
+  // iv_turn and iv_report never create a counted row and are never blocked, so a started interview can finish.
+  const lkey = feature === 'iv_start' ? 'interview' : feature;
+  if (!pro && (!feature.startsWith('iv_') || feature === 'iv_start')) {
+    const planResponse = await rest('plans?id=eq.free&select=limits');
+    if (!planResponse.ok) return fail(503, 'usage_check', 'Could not verify your free usage limit. Please try again shortly.');
+    const plan = A(await planResponse.json())[0];
+    const lim = freeLimits(plan && plan.limits);
+    const max = isChat ? lim.chat_per_day : lim[lkey];
 
-if (!pro && (!feature.startsWith('iv_') || feature === 'iv_start')) {
-  const plan = A(await (await rest('plans?id=eq.free&select=limits')).json())[0];
-  const lim = (plan && plan.limits) || {};
-  const max = isChat ? lim.chat_per_day : lim[lkey];
-
-  if (max != null) {
-    // India midnight (IST) reset
+    // Daily reset at midnight India time (IST = UTC+05:30, no daylight saving):
+    // find today's IST midnight, then convert it back to a UTC instant for Supabase.
     const ist = new Date(Date.now() + 330 * 60 * 1000);
     ist.setUTCHours(0, 0, 0, 0);
-    const since = new Date(ist.getTime() - 330 * 60 * 1000);
+    const since = new Date(ist.getTime() - 330 * 60 * 1000).toISOString();
 
     const q = isChat
-      ? 'chat_messages?select=id&role=eq.user&created_at=gte.' + since.toISOString()
-      : 'analyses?select=id&type=eq.' + lkey +
-        '&created_at=gte.' + since.toISOString();
-
-    const cr = await rest(q, {
-      headers: { Prefer: 'count=exact', Range: '0-0' }
-    });
-
+      ? 'chat_messages?select=id&user_id=eq.' + user.id + '&role=eq.user&created_at=gte.' + since
+      : 'analyses?select=id&user_id=eq.' + user.id + '&type=eq.' + lkey + '&created_at=gte.' + since;
+    const cr = await rest(q, { headers: { Prefer: 'count=exact', Range: '0-0' } });
+    if (!cr.ok) return fail(503, 'usage_check', 'Could not verify your daily usage. Please try again shortly.');
     const used = +((cr.headers.get('content-range') || '').split('/')[1]) || 0;
 
     if (used >= max) {
@@ -157,7 +174,6 @@ if (!pro && (!feature.startsWith('iv_') || feature === 'iv_start')) {
         : `You've used your ${max} free ${lkey === 'interview' ? 'interview practice sessions' : lkey === 'resume_build' ? 'resume builds' : lkey + ' analyses'} today. Please come back tomorrow.`);
     }
   }
-}
 
   // Interview turns and reports must belong to a real, recent session of this user
   if (feature === 'iv_turn' || feature === 'iv_report') {
