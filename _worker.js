@@ -115,29 +115,49 @@ async function handleAi(request, env) {
     ...o, headers: { ...auth, 'Content-Type': 'application/json', ...(o.headers || {}) },
   });
 
-  // 2. Plan and free-tier limits (read with the user's own token, so row security applies)
+  // 2. Plan and free-tier limits
+const paidPlansEnabled = false;
+let pro = false;
+
+if (paidPlansEnabled) {
   const subs = await (await rest('subscriptions?select=plan_id,status,expiry_date&limit=1')).json();
   const sub = A(subs)[0];
-  const pro = sub && sub.plan_id !== 'free' && sub.status === 'active' && (!sub.expiry_date || new Date(sub.expiry_date) > new Date());
-  const lkey = feature === 'iv_start' ? 'interview' : feature;
-  if (!pro && (!feature.startsWith('iv_') || feature === 'iv_start')) {
-    const plan = A(await (await rest('plans?id=eq.free&select=limits')).json())[0];
-    const lim = (plan && plan.limits) || {};
-    const max = isChat ? lim.chat_per_day : lim[lkey];
-    if (max != null) {
-      const since = new Date(); since.setUTCHours(0, 0, 0, 0);
-      const q = isChat
-        ? 'chat_messages?select=id&role=eq.user&created_at=gte.' + since.toISOString()
-        : 'analyses?select=id&type=eq.' + lkey;
-      const cr = await rest(q, { headers: { Prefer: 'count=exact', Range: '0-0' } });
-      const used = +((cr.headers.get('content-range') || '').split('/')[1]) || 0;
-      if (used >= max) {
-        return fail(429, 'limit', isChat
-          ? `You’ve used your ${max} free chat questions for today. Please come back tomorrow.`
-          : `You’ve used your ${max} free ${lkey === 'interview' ? 'interview practice sessions' : lkey === 'resume_build' ? 'resume builds' : lkey + ' analyses'}. More free credits are coming soon.`);
-      }
+  pro = !!(sub && sub.plan_id !== 'free' &&
+    sub.status === 'active' &&
+    (!sub.expiry_date || new Date(sub.expiry_date) > new Date()));
+}
+
+const lkey = feature === 'iv_start' ? 'interview' : feature;
+
+if (!pro && (!feature.startsWith('iv_') || feature === 'iv_start')) {
+  const plan = A(await (await rest('plans?id=eq.free&select=limits')).json())[0];
+  const lim = (plan && plan.limits) || {};
+  const max = isChat ? lim.chat_per_day : lim[lkey];
+
+  if (max != null) {
+    // India midnight (IST) reset
+    const ist = new Date(Date.now() + 330 * 60 * 1000);
+    ist.setUTCHours(0, 0, 0, 0);
+    const since = new Date(ist.getTime() - 330 * 60 * 1000);
+
+    const q = isChat
+      ? 'chat_messages?select=id&role=eq.user&created_at=gte.' + since.toISOString()
+      : 'analyses?select=id&type=eq.' + lkey +
+        '&created_at=gte.' + since.toISOString();
+
+    const cr = await rest(q, {
+      headers: { Prefer: 'count=exact', Range: '0-0' }
+    });
+
+    const used = +((cr.headers.get('content-range') || '').split('/')[1]) || 0;
+
+    if (used >= max) {
+      return fail(429, 'limit', isChat
+        ? `You've used your ${max} free chat questions for today. Please come back tomorrow.`
+        : `You've used your ${max} free ${lkey === 'interview' ? 'interview practice sessions' : lkey === 'resume_build' ? 'resume builds' : lkey + ' analyses'} today. Please come back tomorrow.`);
     }
   }
+}
 
   // Interview turns and reports must belong to a real, recent session of this user
   if (feature === 'iv_turn' || feature === 'iv_report') {
