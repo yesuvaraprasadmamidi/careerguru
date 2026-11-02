@@ -342,7 +342,7 @@ function rbAct(a){
   if(!(S.f.rb_title||'').trim())return toast('Enter the job title first.');
   S.rbT='';sv('cg_rbt','');
   const c=(k,m)=>String(S.f[k]||'').slice(0,m);
-  return run('resume_build',`TARGET JOB TITLE: ${c('rb_title',100)}\n\nJOB DESCRIPTION:\n${c('jd',4500)}\n\nPROFILE:\n${pstr()}\n\nPROJECTS (written by the candidate):\n${c('rb_proj',2500)||'(none)'}\n\nEXTRA DETAILS (CGPA, years, achievements):\n${c('rb_extra',1500)||'(none)'}\n\nEXISTING RESUME:\n${c('resume',2500)||'(none)'}`)}
+  return run('resume_build',`TARGET JOB TITLE: ${c('rb_title',100)}\n\nJOB DESCRIPTION:\n${c('jd',4500)}\n\nPROFILE:\n${pstr()}\n\nPROJECTS (written by the candidate):\n${c('rb_proj',2500)||'(none)'}\n\nEXTRA DETAILS (CGPA, years, achievements):\n${c('rb_extra',1500)||'(none)'}\n\nEXISTING RESUME:\n${c('resume',2500)||'(none)'}`,{contact:{name:S.p.name,phone:S.f.rb_phone,city:S.f.rb_city,email:S.f.rb_email||(S.user&&S.user.email),links:S.f.rb_links}})}
 
 function render(){
   $('#app').innerHTML=(S.user&&!S.rec?V[S.tab]:V.auth)();

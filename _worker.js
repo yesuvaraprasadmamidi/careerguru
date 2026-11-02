@@ -11,23 +11,6 @@ const GENERIC = 'We couldn’t complete the analysis right now. Please try again
 const J = (o, s = 200) => Response.json(o, { status: s, headers: { 'Cache-Control': 'no-store' } });
 const fail = (s, code, error, detail) => J({ code, error, detail }, s);
 
-// Free-plan daily limits. The Supabase "plans" row with id = 'free' (its "limits" column) is the
-// source of truth. The numbers below are only a safety net for a key that row does not define,
-// so the database value always wins. chat_per_day counts chat messages; every other key counts uses.
-const FREE_DEFAULTS = { career: 5, resume: 5, job: 3, resume_build: 5, interview: 3, chat_per_day: 10 };
-function freeLimits(raw) {
-  let src = raw;
-  if (typeof src === 'string') { try { src = JSON.parse(src); } catch { src = null; } }
-  if (!src || typeof src !== 'object') src = {};
-  const out = {};
-  for (const k in FREE_DEFAULTS) {
-    const v = src[k];
-    const ok = (typeof v === 'number' || (typeof v === 'string' && v.trim() !== '')) && Number.isFinite(Number(v)) && Number(v) >= 0;
-    out[k] = ok ? Math.floor(Number(v)) : FREE_DEFAULTS[k];
-  }
-  return out;
-}
-
 // One modular prompt per feature
 const PROMPTS = {
   career: {
@@ -105,7 +88,7 @@ async function handleAi(request, env) {
   if (!token) return fail(401, 'auth', 'Please log in.');
   let body;
   try { body = await request.json(); } catch { return fail(400, 'input', 'Invalid request.'); }
-  const { feature, input, history, profile, file } = body || {};
+  const { feature, input, history, profile, file, contact } = body || {};
   if (!Object.prototype.hasOwnProperty.call(PROMPTS, feature)) return fail(400, 'input', 'Unknown feature.');
   const isChat = feature === 'chat';
   if (typeof input !== 'string' || !input.trim() || input.length > (isChat ? 2000 : 14000)) {
@@ -144,34 +127,40 @@ async function handleAi(request, env) {
       (!sub.expiry_date || new Date(sub.expiry_date) > new Date()));
   }
 
-  // Each use is counted exactly once, from the one row this worker saves after a successful AI answer:
-  // analyses (type = feature; interview = one row per session) or chat_messages (role = user only).
-  // iv_turn and iv_report never create a counted row and are never blocked, so a started interview can finish.
   const lkey = feature === 'iv_start' ? 'interview' : feature;
   if (!pro && (!feature.startsWith('iv_') || feature === 'iv_start')) {
     const planResponse = await rest('plans?id=eq.free&select=limits');
     if (!planResponse.ok) return fail(503, 'usage_check', 'Could not verify your free usage limit. Please try again shortly.');
     const plan = A(await planResponse.json())[0];
-    const lim = freeLimits(plan && plan.limits);
+    const defaults = {
+      career: 2,
+      resume: 2,
+      job: 3,
+      resume_build: 2,
+      interview: 1,
+      chat_per_day: 10
+    };
+    const lim = { ...((plan && plan.limits) || {}), ...defaults };
     const max = isChat ? lim.chat_per_day : lim[lkey];
 
-    // Daily reset at midnight India time (IST = UTC+05:30, no daylight saving):
-    // find today's IST midnight, then convert it back to a UTC instant for Supabase.
-    const ist = new Date(Date.now() + 330 * 60 * 1000);
-    ist.setUTCHours(0, 0, 0, 0);
-    const since = new Date(ist.getTime() - 330 * 60 * 1000).toISOString();
+    if (max != null) {
+      // Calculate midnight in India (UTC+05:30), then convert it back to UTC for Supabase.
+      const ist = new Date(Date.now() + 330 * 60 * 1000);
+      ist.setUTCHours(0, 0, 0, 0);
+      const since = new Date(ist.getTime() - 330 * 60 * 1000);
 
-    const q = isChat
-      ? 'chat_messages?select=id&user_id=eq.' + user.id + '&role=eq.user&created_at=gte.' + since
-      : 'analyses?select=id&user_id=eq.' + user.id + '&type=eq.' + lkey + '&created_at=gte.' + since;
-    const cr = await rest(q, { headers: { Prefer: 'count=exact', Range: '0-0' } });
-    if (!cr.ok) return fail(503, 'usage_check', 'Could not verify your daily usage. Please try again shortly.');
-    const used = +((cr.headers.get('content-range') || '').split('/')[1]) || 0;
+      const q = isChat
+        ? 'chat_messages?select=id&role=eq.user&created_at=gte.' + since.toISOString()
+        : 'analyses?select=id&type=eq.' + lkey + '&created_at=gte.' + since.toISOString();
+      const cr = await rest(q, { headers: { Prefer: 'count=exact', Range: '0-0' } });
+      if (!cr.ok) return fail(503, 'usage_check', 'Could not verify your daily usage. Please try again shortly.');
+      const used = +((cr.headers.get('content-range') || '').split('/')[1]) || 0;
 
-    if (used >= max) {
-      return fail(429, 'limit', isChat
-        ? `You've used your ${max} free chat questions for today. Please come back tomorrow.`
-        : `You've used your ${max} free ${lkey === 'interview' ? 'interview practice sessions' : lkey === 'resume_build' ? 'resume builds' : lkey + ' analyses'} today. Please come back tomorrow.`);
+      if (used >= max) {
+        return fail(429, 'limit', isChat
+          ? `You've used your ${max} free chat questions for today. Please come back tomorrow.`
+          : `You've used your ${max} free ${lkey === 'interview' ? 'interview practice sessions' : lkey === 'resume_build' ? 'resume builds' : lkey + ' analyses'} today. Please come back tomorrow.`);
+      }
     }
   }
 
@@ -226,7 +215,24 @@ async function handleAi(request, env) {
   const rows = isChat
     ? ['chat_messages', [{ user_id: user.id, role: 'user', content: input }, { user_id: user.id, role: 'assistant', content: result }]]
     : ['analyses', { user_id: user.id, type: feature, input: input.slice(0, 4000), result }];
-  await rest(rows[0], { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(rows[1]) });
+  const saved = await rest(rows[0], { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(rows[1]) });
+  if (!saved.ok) console.error('save failed', rows[0], saved.status, (await saved.text()).slice(0, 200));
+
+  // Keep a copy of every user's resume in the resumes table (analysis JSON lets the owner view it like the user saw it)
+  if (feature === 'resume' || feature === 'resume_build') {
+    const built = feature === 'resume_build';
+    const ct = (contact && typeof contact === 'object')
+      ? Object.fromEntries(['name', 'phone', 'city', 'email', 'links'].map(k => [k, String(contact[k] || '').slice(0, 200)])) : {};
+    const row = {
+      user_id: user.id, email: user.email, source: feature,
+      title: built ? String(result.title || 'Built resume').slice(0, 120) : 'Analyzed resume (score ' + result.overall + ')',
+      content: built ? JSON.stringify(result) : String(result.resume_text || input).slice(0, 12000),
+      score: built ? null : Math.round(+result.overall) || 0,
+      analysis: built ? { ...result, contact: ct } : result,
+    };
+    const rr = await rest('resumes', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(row) });
+    if (!rr.ok) console.error('resumes save failed', rr.status, (await rr.text()).slice(0, 200));
+  }
   return J({ result });
 }
 

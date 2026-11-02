@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<title>CareerGuru Admin</title>
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#07080f">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
+<style>
+:root{--bg:#07080f;--s:rgba(255,255,255,.055);--bd:rgba(255,255,255,.1);--tx:#eef0ff;--mu:#9aa0c3;--a:#7c6bff;--a2:#38e0ff;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;color:var(--tx);background-color:var(--bg);background-image:radial-gradient(60% 40% at 8% -5%,rgba(124,107,255,.3),transparent),radial-gradient(50% 35% at 100% 8%,rgba(56,224,255,.13),transparent);background-attachment:fixed;font:15px/1.55 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 104px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:14px 0 6px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
+.brand i{font-style:normal;color:var(--a2)}
+.logo{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#8b7bff,#38e0ff);color:#07080f;font-weight:800;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 18px rgba(124,107,255,.45)}
+.av{overflow:hidden;padding:0;width:40px;height:40px;border-radius:50%;border:1px solid var(--bd);background:var(--s);color:var(--tx);display:grid;place-items:center;font:inherit;font-weight:700;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+.h{font-size:24px;line-height:1.25;margin:10px 0 4px;font-weight:800}
+.h2{font-size:17px;margin:20px 0 0}
+.mu{color:var(--mu);margin:.3em 0}
+p{margin:.4em 0}
+ul{margin:.4em 0 .8em;padding-left:18px}
+.card{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid var(--bd);border-radius:20px;padding:16px;margin:12px 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 12px 32px rgba(0,0,0,.4);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);overflow-wrap:anywhere}
+.row{display:flex;gap:14px;align-items:center}
+.btn{position:relative;overflow:hidden;width:100%;border:0;border-radius:14px;padding:13px 18px;font:inherit;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,#8b7bff,#5b4bff);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 22px rgba(91,75,255,.4)}
+.btn::after{content:"";position:absolute;inset:0 0 50% 0;background:linear-gradient(rgba(255,255,255,.2),transparent);pointer-events:none}
+.btn.g{background:var(--s);border:1px solid var(--bd);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.btn.g::after{display:none}
+.btn:disabled{opacity:.5}
+.chip{display:block;text-align:left;margin-top:8px;font-weight:600;font-size:14px}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--a2);outline-offset:2px}
+.lb{display:block;margin:10px 0 0;font-size:13px;color:var(--mu);font-weight:600}
+input,textarea,select{display:block;width:100%;margin-top:5px;background:rgba(255,255,255,.05);border:1px solid var(--bd);border-radius:12px;color:var(--tx);padding:12px;font:inherit;font-size:16px;resize:vertical}
+select option{background:#14162a}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.q{display:flex;flex-direction:column;gap:8px;align-items:flex-start;text-align:left;padding:14px;border-radius:18px;border:1px solid var(--bd);color:var(--tx);font:inherit;font-weight:700;font-size:14px;cursor:pointer;background:linear-gradient(160deg,rgba(255,255,255,.1),rgba(255,255,255,.03));box-shadow:inset 0 1px 0 rgba(255,255,255,.16)}
+.q svg{color:var(--a2)}
+.ring{flex:none;width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--a2) calc(var(--v)*1%),rgba(255,255,255,.09) 0);box-shadow:0 0 24px rgba(56,224,255,.2)}
+.ring b{width:68px;height:68px;border-radius:50%;background:#0c0e1b;display:grid;place-items:center;font-size:22px}
+.bl{display:flex;justify-content:space-between;font-size:13px;margin-top:10px}
+.tr{height:8px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:4px}
+.tr i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--a),var(--a2))}
+.tag{display:inline-block;padding:3px 10px;border-radius:99px;background:rgba(124,107,255,.18);border:1px solid rgba(124,107,255,.4);font-size:12px;font-weight:600;margin:4px 4px 0 0}
+.fx{border-left:3px solid var(--a);padding-left:10px;margin:10px 0}
+.plan .row{justify-content:space-between}
+.plan .btn{margin-top:10px}
+.plan.best{border-color:rgba(56,224,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 0 28px rgba(56,224,255,.18)}
+.m{max-width:90%;padding:10px 14px;border-radius:18px;margin:8px 0;overflow-wrap:anywhere}
+.m p{margin:.25em 0}.m li{margin-left:16px;display:list-item}
+.m.u{margin-left:auto;background:linear-gradient(135deg,#8b7bff,#5b4bff);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.m.a{background:var(--s);border:1px solid var(--bd)}
+.sk{height:14px;border-radius:8px;margin:12px 0;background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.13),rgba(255,255,255,.05));background-size:200% 100%;animation:sh 1.3s linear infinite}
+@keyframes sh{to{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.sk{animation:none}}
+.err{border-color:rgba(255,120,140,.5)}
+.bar{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(9,10,19,.8);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-top:1px solid var(--bd);z-index:5}
+.bar button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:var(--mu);font:inherit;font-size:11px;font-weight:600;padding:4px 0;cursor:pointer}
+.bar button.on{color:var(--a2)}
+.bar button.on svg{filter:drop-shadow(0 0 6px rgba(56,224,255,.7))}
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:90%;padding:10px 16px;border-radius:14px;background:#1b1e38;border:1px solid var(--bd);font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9}
+#toast.on{opacity:1}
+.lg{text-align:center;font-size:13px;color:var(--mu);margin:6px 0 0}.lg a{color:var(--mu);margin:0 4px}
+@media(min-width:768px){.grid{grid-template-columns:repeat(3,1fr)}}
+.rv{background:#fff;color:#111;padding:20px 18px;border-radius:12px;line-height:1.45;font-size:12px;overflow-wrap:anywhere}
+.rv h1{margin:0;font-size:2.1em;line-height:1.15}
+.rv h2{margin:1.3em 0 .5em;font-size:1em;letter-spacing:.12em;text-transform:uppercase}
+.rv p{margin:0}.rv ul{margin:.3em 0 .5em;padding-left:1.5em}.rv li{margin:.2em 0}
+.rv header p:empty{display:none}
+.rv .rw{display:flex;justify-content:space-between;gap:10px;margin-top:.5em}
+.rv .rw span{text-align:right;flex:none;max-width:45%}
+.t1{font-family:Georgia,'Times New Roman',serif}.t1 header{text-align:center}.t1 h1{text-transform:uppercase;letter-spacing:.06em}.t1 h2{border-bottom:1.5px solid #111;padding-bottom:2px}
+.t2{font-family:Arial,Helvetica,sans-serif}.t2 .rt{color:#0b5563;font-weight:700;font-size:1.25em}.t2 h2{color:#0b5563;border-bottom:1px solid #b9cdd1;padding-bottom:3px}
+.t3{font-family:Calibri,Carlito,Arial,sans-serif}.t3 h1{color:#14213d}.t3 h2{background:#e9eef3;color:#14213d;padding:3px 8px}
+#rp{display:none}
+@media print{@page{size:A4;margin:14mm}html,body{background:#fff!important;background-image:none!important}:root{padding:0!important}.wrap,.bar,#toast{display:none!important}#rp{display:block}#rp .rv{padding:0;border-radius:0;font-size:10.5pt}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand"><img src="/icon.svg" width="34" height="34" alt="" style="border-radius:11px;display:block"><span>CareerGuru <i>Admin</i></span></div></header>
+<main id="app"><div class="card"><b>Loading…</b></div></main>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const e=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const A=x=>Array.isArray(x)?x:[];
+const n=x=>Math.max(0,Math.min(100,Math.round(+x)||0));
+const tags=a=>A(a).map(x=>`<span class="tag">${e(x)}</span>`).join('');
+const li=a=>A(a).map(x=>`<li>${e(x)}</li>`).join('');
+const ring=v=>`<div class="ring" style="--v:${n(v)}"><b>${n(v)}</b></div>`;
+const bar=(l,v)=>`<div class="bl"><span>${e(l)}</span><b>${n(v)}%</b></div><div class="tr"><i style="width:${n(v)}%"></i></div>`;
+const resumeOut=r=>`<div class="card row">${ring(r.overall)}<div><b>Resume score</b><p class="mu">Out of 100, scored on the text you provided.</p></div></div>
+<div class="card">${Object.entries(r.scores||{}).map(([k,v])=>bar(k,v)).join('')}</div>
+<div class="card"><b>Problems found</b><ul>${li(r.problems)}</ul></div>
+<div class="card"><b>Exact improvements</b>${A(r.fixes).map(f=>`<div class="fx"><p class="mu">Before: ${e(f.before)}</p><p>After: ${e(f.after)}</p></div>`).join('')}<b>Improved summary</b><p>${e(r.improved_summary)}</p></div>`;
+const RBT=[['1','Classic'],['2','Modern'],['3','Fresher']];
+let SB={},ses=null,rows=[],view={id:null,f:'all',t:''};
+function rbHtml(d,t){
+  const c=d.contact||{};
+  const ct=[c.city,c.phone,c.email].filter(Boolean).map(e).join(' | ');
+  const lk=String(c.links||'').split(/[\n,]+/).map(x=>x.trim()).filter(Boolean).map(e).join(' | ');
+  const rw=(l,r)=>`<div class="rw"><b>${e(l)}</b><span>${e(r||'')}</span></div>`;
+  const ul=a=>A(a).length?`<ul>${li(a)}</ul>`:'';
+  const sec=(h,b)=>b?`<h2>${h}</h2>${b}`:'';
+  const S1=sec('Summary',d.summary?`<p>${e(d.summary)}</p>`:'');
+  const S2=sec('Technical Skills',A(d.skills).map(s=>`<p><b>${e(s.l)}:</b> ${e(A(s.items).join(', '))}</p>`).join(''));
+  const S3=sec('Experience',A(d.experience).map(x=>rw([x.role,x.org].filter(Boolean).join(' | '),x.dates)+ul(x.bullets)).join(''));
+  const S4=sec('Projects',A(d.projects).map(x=>rw([x.name,x.stack].filter(Boolean).join(' | '),x.link)+ul(x.bullets)).join(''));
+  const S5=sec('Education',A(d.education).map(x=>rw([x.degree,x.school].filter(Boolean).join(', '),x.dates)+(x.cgpa?`<p>CGPA: ${e(x.cgpa)}</p>`:'')).join(''));
+  const S6=sec('Certifications',ul(d.certs)),S7=sec('Achievements',ul(d.achievements));
+  return `<div class="rv t${t}"><header><h1>${e(c.name||'Name not saved')}</h1>${t==='2'&&d.title?`<div class="rt">${e(d.title)}</div>`:''}<p>${ct}</p><p>${lk}</p></header>${t==='3'?S1+S4+S2+S3+S5+S6+S7:S1+S2+S3+S4+S5+S6+S7}</div>`}
+const when=s=>{try{return new Date(s).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',dateStyle:'medium',timeStyle:'short'})}catch(x){return s}};
+function list(){
+  const r=rows.filter(x=>view.f==='all'||x.source===view.f);
+  const chip=(k,l)=>`<button class="btn g chip" style="width:auto;${view.f===k?'border-color:var(--a2)':''}" data-f="${k}">${l}</button>`;
+  return `<h1 class="h">Users’ resumes</h1><p class="mu">${rows.length} saved. Tap one to see it the way the user saw it.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">${chip('all','All')}${chip('resume','Analyzer')}${chip('resume_build','Builder')}</div>`+
+  (r.length?r.map(x=>`<button class="card" style="width:100%;text-align:left;color:inherit;font:inherit;cursor:pointer" data-id="${e(x.id)}"><b>${e(x.title||'Resume')}</b> <span class="tag">${x.source==='resume_build'?'Builder':'Analyzer'}</span><p class="mu">${e(x.email||('User '+String(x.user_id).slice(0,8)))}</p><p class="mu">${e(when(x.created_at))}</p></button>`).join(''):'<div class="card"><p class="mu">No resumes to show.</p></div>');
+}
+function detail(x){
+  const a=x.analysis,back='<button class="btn g chip" style="width:auto" data-back="1">← Back</button>';
+  const meta=`<p class="mu">${e(x.email||('User '+String(x.user_id).slice(0,8)))} · ${e(when(x.created_at))}</p>`;
+  const raw=`<details class="card"><summary>Raw text</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:13px">${e(x.content)}</pre></details>`;
+  if(x.source==='resume_build'&&a&&A(a.skills).length){
+    const t=['1','2','3'].includes(view.t)?view.t:(A(a.experience).length?'2':'3');
+    return back+`<h1 class="h">${e(x.title)}</h1>${meta}<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0">${RBT.map(([k,nm])=>`<button class="q" style="${t===k?'border-color:var(--a2)':''}" data-t="${k}">${nm}</button>`).join('')}</div><div style="margin:12px 0">${rbHtml(a,t)}</div>`+raw}
+  if(x.source==='resume'&&a&&a.overall!=null)return back+`<h1 class="h">${e(x.title)}</h1>${meta}${resumeOut(a)}`+raw;
+  return back+`<h1 class="h">${e(x.title||'Resume')}</h1>${meta}<p class="mu">This older resume was saved as text only.</p>`+raw}
+function render(){const x=rows.find(r=>r.id===view.id);$('#app').innerHTML=x?detail(x):list()}
+document.addEventListener('click',ev=>{
+  const b=ev.target.closest('[data-id],[data-back],[data-f],[data-t]');if(!b)return;
+  if(b.dataset.id){view.id=b.dataset.id;view.t='';scrollTo(0,0)}
+  else if(b.dataset.back)view.id=null;
+  else if(b.dataset.f)view.f=b.dataset.f;
+  else if(b.dataset.t)view.t=b.dataset.t;
+  render()});
+const msg=t=>{$('#app').innerHTML=`<div class="card"><b>${t}</b><p class="mu">Open <a href="/">CareerGuru AI</a>, log in with the owner account, then reopen this page.</p></div>`};
+(async()=>{
+  try{
+    SB=await (await fetch('/api/config')).json();
+    let sx=null;try{sx=JSON.parse(localStorage.getItem('cg_s'))}catch(x){}
+    if(!sx||!sx.access_token)return msg('Not logged in');
+    if(Date.now()>sx.exp){
+      const r=await fetch(SB.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:SB.key,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:sx.refresh_token})});
+      if(!r.ok)return msg('Session expired');
+      const j=await r.json();sx={access_token:j.access_token,refresh_token:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000-60000,user:j.user||sx.user};
+      localStorage.setItem('cg_s',JSON.stringify(sx))}
+    const r=await fetch(SB.url+'/rest/v1/resumes?select=id,user_id,email,source,title,score,analysis,content,created_at&order=created_at.desc&limit=100',{headers:{apikey:SB.key,Authorization:'Bearer '+sx.access_token}});
+    if(!r.ok)return msg('Could not load resumes');
+    rows=A(await r.json());render()
+  }catch(x){msg('Something went wrong')}
+})();
+</script>
+</body>
+</html>
